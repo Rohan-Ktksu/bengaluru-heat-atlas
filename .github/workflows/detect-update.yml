@@ -1,0 +1,48 @@
+name: Detect new usable satellite data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 2 * * *'
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: detect-usable-update
+  cancel-in-progress: false
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          project_id: ${{ vars.EE_PROJECT_ID }}
+
+      - name: Install Earth Engine API
+        run: pip install 'earthengine-api>=1.6,<2'
+
+      - name: Detect usable updates
+        run: python automation/detect_update.py --output update-status.json
+        env:
+          EE_PROJECT_ID: ${{ vars.EE_PROJECT_ID }}
+
+      - name: Upload detection result
+        uses: actions/upload-artifact@v4
+        with:
+          name: update-status
+          path: update-status.json
+          retention-days: 14
