@@ -1,0 +1,36 @@
+name: Check satellite catalog availability
+on:
+  schedule:
+    - cron: '23 2 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: satellite-catalog-check
+  cancel-in-progress: false
+jobs:
+  check:
+    if: vars.ENABLE_CATALOG_CHECK == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Authenticate without a stored private key
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          project_id: ${{ vars.EE_PROJECT_ID }}
+      - run: pip install 'earthengine-api>=1.6,<2'
+      - run: python automation/check_catalog.py --output catalog-status.json
+        env:
+          EE_PROJECT_ID: ${{ vars.EE_PROJECT_ID }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: catalog-status
+          path: catalog-status.json
+          retention-days: 14
