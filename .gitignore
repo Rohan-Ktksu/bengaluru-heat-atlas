@@ -40,3 +40,7 @@ gha-creds-*.json
 # The website is authored static output, and must be versioned.
 !website/dist/
 !website/dist/**
+
+# Stage 3 review artifacts remain outside source and website publication.
+latest_data/
+update-status.json

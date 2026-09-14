@@ -1,0 +1,45 @@
+name: Process latest scene features (artifact only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: process-latest-features
+  cancel-in-progress: false
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Offline scientific and isolation checks
+        run: python -m unittest discover -s automation -p 'test_latest.py' -v
+      - uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          project_id: ${{ vars.EE_PROJECT_ID }}
+      - run: pip install 'earthengine-api>=1.6,<2'
+      - name: Detect candidates with existing Stage 2 logic
+        run: python automation/detect_update.py --output update-status.json
+        env:
+          EE_PROJECT_ID: ${{ vars.EE_PROJECT_ID }}
+      - name: Extract latest observed features
+        run: python automation/process_latest.py --detection update-status.json --output latest_data
+        env:
+          EE_PROJECT_ID: ${{ vars.EE_PROJECT_ID }}
+      - name: Independently validate artifact
+        run: python automation/validate_latest.py latest_data
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: latest-features-review-${{ github.run_id }}
+          path: |
+            update-status.json
+            latest_data/
+          retention-days: 14
+          if-no-files-found: error
