@@ -1,0 +1,39 @@
+name: Pair scenes and prepare V5 inputs (review only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: prepare-v5-inputs
+  cancel-in-progress: false
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate scientific contracts
+        run: python -m unittest discover -s automation -p 'test_*.py' -v
+      - uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          project_id: ${{ vars.EE_PROJECT_ID }}
+      - run: pip install 'earthengine-api>=1.6,<2'
+      - name: Find compatible imagery and prepare features
+        run: python automation/prepare_v5_inputs.py --output latest_data/v5-inputs
+        env:
+          EE_PROJECT_ID: ${{ vars.EE_PROJECT_ID }}
+      - name: Validate model inputs
+        run: python automation/validate_v5_inputs.py latest_data/v5-inputs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v5-input-review-${{ github.run_id }}
+          path: latest_data/v5-inputs/
+          retention-days: 14
+          if-no-files-found: error
