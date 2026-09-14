@@ -36,7 +36,7 @@ jobs:
         run: pip install 'earthengine-api>=1.6,<2'
 
       - name: Detect usable updates
-        run: python automation/detect_update.py --output update-status.json
+        run: python automation/detect_update.py --state automation/update_state.json --output update-status.json
         env:
           EE_PROJECT_ID: ${{ vars.EE_PROJECT_ID }}
 
