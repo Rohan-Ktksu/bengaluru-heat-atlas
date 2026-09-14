@@ -1,0 +1,25 @@
+BENGALURU URBAN HEAT MITIGATION - FINAL ANALYSIS
+
+Total study grid cells: 1320
+Approximate study area: 1320 km2
+
+High + Very High priority cells: 330
+High + Very High area: 330 km2
+High + Very High share: 25.00%
+
+Connected hotspot clusters: 73
+
+Highest planning-significance cluster:
+Cluster ID: 2
+Dominant locality: Dr. Shivaram Karanth Layout
+Area: 127 km2
+High cells: 65
+Very High cells: 62
+Mean median LST: 38.86 C
+Maximum LST: 48.33 C
+Planning-scenario trees: 265347
+
+Total planning-scenario trees across study area: 1362505
+Trees associated with High + Very High areas: 719906
+
+Tree numbers are scenario-based planning estimates, not measured ecological requirements.

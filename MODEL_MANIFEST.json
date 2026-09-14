@@ -1,0 +1,22 @@
+[
+  {
+    "filename": "features.pkl",
+    "bytes": 93,
+    "sha256": "b9a070e57eb20318514e23b37d571d9c4375cbbb81cbce7a62ff096b465f5bc1"
+  },
+  {
+    "filename": "feature_importance.csv",
+    "bytes": 228,
+    "sha256": "58ac33e004d1dc50172e4a97d6dcf2b96ff9078a0657934574d77bbc0b7a81a0"
+  },
+  {
+    "filename": "urban_heat_model.pkl",
+    "bytes": 35285473,
+    "sha256": "33d0aae506fd5ed59c66acd49390e394d163c6715498d85ba5222724b898f3cf"
+  },
+  {
+    "filename": "urban_heat_model_v5.pkl",
+    "bytes": 350572761,
+    "sha256": "6baf621deaa213864c84877d75e47c64b6467f715bcc34221d09075661f273b0"
+  }
+]

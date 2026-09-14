@@ -1,0 +1,42 @@
+# Credentials and local environments
+.env
+.env.*
+!.env.example
+.config/
+credentials*
+*service-account*.json
+*service_account*.json
+.venv/
+venv/
+
+# Python and notebooks
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Generated data, model files, and shareable bundles
+data/raw/
+data/processed/
+outputs/
+models/
+dist/
+*.tif
+*.tiff
+*.nc
+*.h5
+*.joblib
+
+# Future web build
+node_modules/
+.DS_Store
+
+# Local previews and packaging
+tmp/
+.sites-runtime/
+gha-creds-*.json
+*.tar.gz
+# The website is authored static output, and must be versioned.
+!website/dist/
+!website/dist/**

@@ -1,0 +1,128 @@
+BENGALURU URBAN HEAT MITIGATION PROJECT
+VALIDATION, CONFIDENCE AND LIMITATIONS
+
+1. COMPLETE-GRID VALIDATION
+
+The complete-grid V5 prediction surface was compared against 678 cells from the earlier reliable multi-date hotspot analysis.
+Mean absolute difference between the two median-LST surfaces: 2.50 C.
+Root mean square difference: 3.08 C.
+Median absolute difference: 2.36 C.
+90th percentile absolute difference: 4.81 C.
+Correlation between the two median-LST surfaces: 0.283.
+Exact cooling-priority agreement: 38.05%.
+
+These statistics describe agreement between the original persistent-analysis surface and the complete-grid V5 surface.
+They should not be reported as the independent test accuracy of the V5 machine-learning model.
+
+2. WHY A HYBRID APPROACH WAS USED
+
+The complete-grid V5 prediction surface did not reproduce all observed hotspot patterns sufficiently well.
+Several strong historical hotspot cells were reduced substantially when represented only by complete-grid V5 predictions.
+Therefore, reliable multi-date hotspot observations were preserved instead of being replaced by V5 predictions.
+V5 was used primarily to supplement limited-observation areas and to provide predictions for cells with no historical observations.
+
+The final heat surface is therefore a hybrid evidence surface rather than a purely model-generated temperature surface.
+
+3. PLANNING RELIABILITY
+
+Strong planning-reliability cells: 111
+Moderate planning-reliability cells: 567
+Limited planning-reliability cells: 578
+Model-only cells: 64
+
+Planning reliability indicates the strength of observational support behind each grid cell.
+It does not represent a formal statistical confidence interval.
+
+4. DATA-SOURCE COVERAGE
+
+Reliable multi-date observation cells: 678
+Limited observation plus V5 cells: 578
+V5 prediction-only cells: 64
+
+Prediction-only cells should be interpreted more cautiously because they lack direct multi-date historical support in the final persistent analysis.
+
+5. HOTSPOT EVIDENCE
+
+High and Very High priority cells: 330
+High/Very High cells supported by reliable multi-date observations: 233
+High/Very High cells supported by limited observations plus V5: 82
+High/Very High cells based on V5 prediction only: 15
+
+The strongest hotspot conclusions should be based primarily on reliable and moderate-observation cells rather than prediction-only cells.
+
+6. APRIL 17, 2026 OUTLIER
+
+The 17 April 2026 Landsat date showed unusually poor V5 agreement compared with the other 2026 evaluation dates.
+The model substantially overpredicted mean LST for that date.
+This period coincided with hot pre-monsoon conditions and changing atmospheric conditions over Bengaluru.
+The date was retained rather than manually removed because it represents a real difficult prediction regime.
+The project reduces the influence of individual extreme dates by using multi-date persistent-heat analysis and median temperature measures.
+
+7. CLOUD AND SATELLITE DATA LIMITATIONS
+
+Landsat and Sentinel observations can be affected by cloud cover, cloud shadows, atmospheric effects and differences in acquisition date.
+Some Landsat-derived values were unavailable in individual grid cells after cloud masking.
+Missing slowly changing spatial features were filled using the median value for the same grid cell across other available dates.
+If no same-cell value was available, a date-level median and then an overall median were used as fallback values.
+
+8. TEMPORAL SAMPLING LIMITATION
+
+The persistent 2026 analysis is based on seven Landsat dates rather than continuous daily satellite observations.
+Therefore, the project represents sampled seasonal heat behaviour rather than every short-duration heat event.
+Additional cloud-free scenes and future years would improve temporal robustness.
+
+9. WEATHER-DATA LIMITATION
+
+Meteorological variables were integrated with satellite features, but regional atmospheric datasets do not fully capture street-scale urban microclimates.
+Local shading, traffic, building geometry, construction materials and anthropogenic heat can create variations below the resolution of the atmospheric datasets.
+
+10. MACHINE-LEARNING LIMITATION
+
+The V5 model improves coverage but does not replace satellite-measured LST.
+Random Forest regression can smooth extreme temperature behaviour toward patterns represented more strongly in the training data.
+This was one reason the hybrid final heat surface was preferred over a purely V5-generated surface.
+
+11. COOLING-PRIORITY CLASSIFICATION
+
+The final Low, Moderate, High and Very High classes are relative planning categories.
+Their boundaries were generated from the heat-score distribution rather than from universal physiological or legal temperature thresholds.
+Therefore, the statement that 25% of the study grid is High or Very High follows directly from the percentile-based planning classification.
+It should not be interpreted as meaning exactly 25% of Bengaluru exceeds an externally defined dangerous-temperature threshold.
+
+12. TREE-COUNT ASSUMPTION
+
+The final planning scenario estimates approximately 1,362,505 trees across the complete study grid.
+Approximately 719,906 trees are associated with High and Very High priority areas.
+Tree calculations assume approximately 30 square metres of mature effective canopy per tree.
+The calculation represents a planning scenario rather than an exact biological planting requirement.
+Species, spacing, survival rate, mature canopy size, road width, underground utilities, land ownership and available planting space must be assessed before implementation.
+
+13. NON-TREE COOLING
+
+Scenario-based tree-canopy target area: 40,855,490 m2.
+Scenario-based non-tree cooling area: 38,643,251 m2.
+Highly built-up cells are not assumed to solve all heat mitigation through trees.
+The project also recommends green roofs, cool roofs, reflective surfaces, pocket parks, shaded corridors and other complementary interventions.
+
+14. LOCALITY-NAME LIMITATION
+
+Locality names were obtained through reverse geocoding of grid-cell centre coordinates.
+A 1 km cell can overlap several neighbourhoods, so the returned locality should be treated as a convenient geographic label rather than an exact administrative boundary.
+
+15. STUDY-BOUNDARY LIMITATION
+
+The final analysis uses the rectangular Bengaluru study region defined for the remote-sensing workflow.
+The 1,320 km2 figure refers to this analysis grid and should not be presented as the official administrative area of Bengaluru or BBMP.
+A future version can clip results to official BBMP ward or metropolitan boundaries.
+
+16. SAFE INTERPRETATION OF RESULTS
+
+The project can support statements about relative urban heat patterns, persistent hotspot locations, cooling-priority zones and scenario-based mitigation requirements.
+The project should not claim that the model measures exact street-level temperatures everywhere.
+The project should not claim that the estimated tree count is the exact number Bengaluru must plant.
+The project should not treat model-only cells as having the same observational confidence as reliable multi-date cells.
+
+17. RECOMMENDED FUTURE VALIDATION
+
+Future validation should include ground-based weather stations, mobile temperature surveys, additional Landsat years, more cloud-free dates and local urban morphology data.
+Validation against ward-level heat observations would further improve the planning usefulness of the system.

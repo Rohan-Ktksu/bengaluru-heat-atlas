@@ -1,0 +1,2 @@
+# Install the local package and notebook tools into this project's .venv.
+-e .[notebook]

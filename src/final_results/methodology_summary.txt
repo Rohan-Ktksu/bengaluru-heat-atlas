@@ -1,0 +1,173 @@
+BENGALURU URBAN HEAT MITIGATION PROJECT
+FINAL METHODOLOGY SUMMARY
+
+1. STUDY AREA
+
+The Bengaluru study region was divided into approximately 1 km x 1 km grid cells.
+The final complete analysis contains 1320 grid cells, representing approximately 1320 km2.
+
+2. REMOTE-SENSING DATA
+
+Landsat imagery was used for land-surface and spectral information.
+Sentinel-2 imagery was used to provide additional vegetation information at higher spatial resolution.
+Dynamic World land-cover probabilities were used to represent built-up and tree-cover characteristics.
+Elevation and distance-to-water information were included as spatial environmental variables.
+
+3. SPECTRAL AND LAND-SURFACE FEATURES
+
+The remote-sensing feature set includes Landsat NDVI, NDBI, NDWI, Sentinel-2 NDVI, albedo, built probability, tree probability, elevation and distance to water.
+
+NDVI represents vegetation condition.
+NDBI represents built-up characteristics.
+NDWI represents surface-water or moisture-related characteristics.
+Tree probability represents the likelihood of tree cover.
+Built probability represents the likelihood of built-up land cover.
+
+4. WEATHER AND TEMPORAL FEATURES
+
+Weather variables were integrated with satellite observations to improve land-surface-temperature prediction.
+The model includes air temperature, wind speed, relative humidity, soil moisture, precipitation, solar radiation and cloud cover.
+Three-day and seven-day temporal weather features were also included.
+Weather conditions near the satellite overpass time were represented using overpass-specific meteorological features.
+
+5. V5 LAND-SURFACE-TEMPERATURE MODEL
+
+The final V5 prediction model uses 25 input features.
+
+1. L_NDVI
+2. NDBI
+3. NDWI
+4. S2_NDVI
+5. Air_Temp
+6. Wind_Speed
+7. Relative_Humidity
+8. Soil_Moisture
+9. Daily_Precipitation
+10. Precip_3Day
+11. Precip_7Day
+12. Solar_Radiation
+13. Cloud_Cover
+14. Air_Temp_3Day
+15. Air_Temp_7Day
+16. Elevation
+17. Built_Probability
+18. Tree_Probability
+19. Albedo
+20. Distance_To_Water
+21. Overpass_Air_Temp
+22. Overpass_Relative_Humidity
+23. Overpass_Wind_Speed
+24. Overpass_Solar_Radiation
+25. Overpass_Cloud_Cover
+
+The trained V5 model predicts land surface temperature for each grid cell and observation date.
+The same saved feature order was used during complete-grid prediction to ensure compatibility with the trained model.
+
+6. COMPLETE BENGALURU GRID
+
+A complete rectangular 1 km analysis grid was created so that spatial gaps in the original observations would not appear as blank cells in the final planning map.
+Seven prediction dates were processed for every grid cell.
+This produced 9,240 date-level grid predictions.
+
+The seven prediction dates were:
+27 January 2026
+12 February 2026
+28 February 2026
+16 March 2026
+1 April 2026
+17 April 2026
+3 May 2026
+
+7. OBSERVATION SUPPORT
+
+Reliable multi-date observation cells: 678
+Limited observation plus V5 cells: 578
+V5 prediction-only cells: 64
+
+Cells with sufficient historical multi-date observations were retained as the strongest source of persistent-heat evidence.
+Where historical support was limited, V5 predictions were used to provide additional spatial and temporal support.
+Cells without historical observations were represented using V5 prediction only.
+
+8. HYBRID HEAT GRID
+
+The final heat grid uses a hybrid strategy instead of replacing reliable historical observations with complete-grid predictions.
+Reliable multi-date observations were retained where available.
+Limited-observation cells were supplemented using V5 predictions.
+Prediction-only cells were included with lower planning confidence.
+
+This approach preserves strong observed hotspot evidence while providing complete spatial coverage.
+
+9. PERSISTENT HEAT ANALYSIS
+
+Heat priority was not based only on a single hot satellite image.
+Persistent heat was evaluated using multi-date temperature behaviour, including median predicted LST, maximum LST, hot frequency and very-hot frequency.
+Tree-cover and built-up probabilities were also incorporated into the heat-priority analysis.
+
+10. COOLING PRIORITY
+
+Each grid cell was assigned one of four final cooling-priority classes:
+Low
+Moderate
+High
+Very High
+
+High-priority cells: 198
+Very-High-priority cells: 132
+Combined High and Very High cells: 330
+Combined priority area: approximately 330 km2.
+
+11. COOLING INTERVENTION PLAN
+
+The cooling plan considers both tree-based and non-tree cooling interventions.
+Tree interventions include street trees, canopy expansion, pocket parks, urban forests, park restoration and shaded corridors.
+Built-up locations can also require green roofs, cool roofs, reflective pavement and other non-tree cooling measures.
+
+The complete planning scenario estimates approximately 1,362,505 trees across the study grid.
+This value is a scenario-based planning estimate and is not an exact ecological requirement.
+
+12. LOCALITY MAPPING
+
+Grid-cell coordinates were reverse-geocoded to provide locality names for interpretation and website presentation.
+Of the 1,320 final grid cells, locality names were obtained for 1,318 cells.
+
+13. CONNECTED HOTSPOT CLUSTERS
+
+The final analysis identified 73 connected High and Very High hotspot clusters.
+Adjacent priority cells were grouped so that the project could identify larger heat zones rather than reporting isolated grid cells only.
+
+14. HOTSPOT INTENSITY
+
+Hotspot intensity combines mean heat score, maximum heat score, hot-frequency behaviour and the proportion of Very High cells.
+
+Intensity Score =
+40% Mean Heat Score + 25% Maximum Heat Score + 20% Hot Frequency + 15% Very High Share
+
+15. PLANNING SIGNIFICANCE
+
+Planning significance was designed to identify hotspots that matter most for large-scale cooling intervention.
+
+Planning Significance Score =
+30% Cluster Area + 20% Very High Cell Count + 20% Mean Heat Score + 10% Hot Frequency + 10% Maximum Heat Score + 10% Evidence Score
+
+This prevents a single extremely hot 1 km cell from automatically being considered more important than a large connected persistent hotspot.
+
+16. EVIDENCE SCORE
+
+Planning reliability was incorporated into hotspot ranking using an evidence score.
+Strong cells receive the highest evidence weight, followed by Moderate, Limited and Model-Only cells.
+
+17. FINAL PROJECT OUTPUT
+
+The final system provides:
+Complete 1 km Bengaluru heat coverage
+Multi-date LST predictions
+Persistent heat assessment
+Cooling-priority classification
+Locality-level identification
+Connected hotspot detection
+Tree and non-tree cooling recommendations
+Hotspot intensity ranking
+Planning-significance ranking
+Planning reliability information
+
+These outputs form the analytical foundation for the final interactive website and decision-support dashboard.
