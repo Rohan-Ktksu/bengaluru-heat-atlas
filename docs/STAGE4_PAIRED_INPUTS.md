@@ -32,6 +32,10 @@ To reproduce script 37's date-level weather summaries, weather is sampled at 30 
 
 ## Inference helper
 
+All new runs enforce a previous-calendar-month UTC cutoff for acquisitions and their complete ancillary windows. For example, September runs query only data before September 1. The full Dynamic World +5-day window must fit, so some late-August Landsat scenes are deferred until October. This also keeps forward 24-hour weather and overpass windows within the cutoff without changing the trained feature definitions. Status files and prediction summaries record `data_through`, `data_cutoff_exclusive` and `data_date_policy`. Older artifacts without this metadata must be regenerated before using the updated validator/inference helper.
+
+Use **Run workflow** on `main` with `validation_date` empty for a fresh monthly check. This searches eligible unprocessed scenes up to the cutoff; it does not calculate a calendar-month composite or automatically publish predictions.
+
 `predict_v5_review.py` accepts a validated input artifact and a local model path. Before loading the pickle, it checks the original V5 SHA-256 against `MODEL_MANIFEST.json`, checks the recorded scikit-learn/numpy/joblib versions, and verifies the serialized feature order. It predicts eligible cells only and writes an experimental result and observed-LST comparison inside the review artifact.
 
 ```sh

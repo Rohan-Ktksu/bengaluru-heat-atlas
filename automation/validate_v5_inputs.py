@@ -4,10 +4,16 @@ import math
 from pathlib import Path
 from latest_common import load_grid, protected_hashes, read_json, write_json
 from v5_schema import FEATURES,paired,invalid_features
+from monthly_policy import cutoff_metadata, month_cutoff, require_closed_window
+from latest_common import utc
+from datetime import timedelta
 
 def validate(directory,verify_protected=True):
     status=read_json(directory/'metadata/model_input_status.json')
     if status['feature_order']!=FEATURES: raise ValueError('Feature order mismatch')
+    policy=cutoff_metadata(utc(status['generated_at']))
+    if any(status.get(key)!=value for key,value in policy.items()):
+        raise ValueError('Missing or inconsistent previous-month cutoff')
     if any(status.get(k) is not False for k in ['historical_atlas_modified','state_advanced','ml_applied','ready_for_publication']):
         raise ValueError('Review-only invariant failed')
     if verify_protected and status['protected_sha256']!=protected_hashes():
@@ -18,6 +24,9 @@ def validate(directory,verify_protected=True):
         return {'status':'passed_no_compatible_pair','eligible_cell_count':0,'ready_for_publication':False}
     if status['status']!='inputs_ready_for_inference_review': raise ValueError('Inputs incomplete')
     pair=status['pair']
+    cutoff=month_cutoff(utc(status['generated_at']))
+    require_closed_window(pair['landsat_acquisition'],cutoff,timedelta(days=5))
+    require_closed_window(pair['sentinel_acquisition'],cutoff)
     if not paired(pair['landsat_acquisition'],pair['sentinel_acquisition']): raise ValueError('Dates cannot be paired')
     if pair['joint_full_aoi_valid_fraction']<.8: raise ValueError('Insufficient scene-pair coverage')
     rows=read_json(directory/'grid/v5_model_inputs.json')

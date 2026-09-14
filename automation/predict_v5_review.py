@@ -45,7 +45,9 @@ def main():
     summary={'status':'predicted_for_review','predicted_cells':len(output),'model_sha256':digest.hexdigest(),
              'ready_for_publication':False,'historical_atlas_modified':False,'state_advanced':False,
              'note':'Grid-mean input inference differs from pixel training support. Diagnostics are not independent accuracy certification.'}
-    summary['run_kind']=read_json(args.directory/'metadata/model_input_status.json')['run_kind']
+    input_status=read_json(args.directory/'metadata/model_input_status.json')
+    for key in ['run_kind','data_cutoff_exclusive','data_through','data_date_policy']:
+        summary[key]=input_status[key]
     if comparisons:
         errors=np.array([p-o for p,o in comparisons])
         summary['observed_comparison']={'cells':len(comparisons),'MAE_C':float(abs(errors).mean()),

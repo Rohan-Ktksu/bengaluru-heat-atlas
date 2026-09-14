@@ -1,11 +1,16 @@
 """Validate a Stage 3 artifact against the protected historical grid and state."""
 import argparse
+from datetime import timedelta
 from pathlib import Path
+from monthly_policy import cutoff_metadata, month_cutoff, require_closed_window
 from latest_common import (FIELDS, load_grid, protected_hashes, read_json,
                            validate_records, write_json, utc)
 
 def validate(directory):
     metadata = read_json(directory/'metadata/processing_status.json')
+    policy = cutoff_metadata(utc(metadata['generated_at']))
+    if any(metadata.get(key)!=value for key,value in policy.items()):
+        raise ValueError('Missing or inconsistent previous-month cutoff')
     if metadata['protected_sha256'] != protected_hashes():
         raise ValueError('Historical data/state does not match the processing snapshot')
     for flag in ['historical_atlas_modified','state_advanced','ml_applied']:
@@ -16,6 +21,10 @@ def validate(directory):
     if metadata['status']!='processed_for_review':
         raise ValueError('Processing did not succeed')
     selected = metadata['selected_scenes']
+    cutoff = month_cutoff(utc(metadata['generated_at']))
+    for name,scene in selected.items():
+        require_closed_window(scene['acquisition'],cutoff,
+            timedelta(minutes=90) if name=='landsat8' else timedelta())
     rows = read_json(directory/'grid/latest_grid_features.json')
     counts = validate_records(rows,{r['Grid_ID'] for r in load_grid()},selected,
                               metadata['minimum_cell_valid_fraction'])

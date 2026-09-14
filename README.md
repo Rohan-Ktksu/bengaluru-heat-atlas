@@ -47,6 +47,10 @@ Large serialized models should be stored as release assets rather than ordinary 
 
 ## Publish and update
 
+All automated catalog, scene and feature checks use data **through the end of the previous calendar month (UTC)**. A September run uses data through August 31; an October run uses data through September 30. Older unprocessed scenes remain eligible: this is a cutoff, not a monthly average or a last-month-only filter.
+
+For a monthly manual check, open Actions → **Pair scenes and prepare V5 inputs (review only)** → **Run workflow**, select `main`, and leave `validation_date` empty. Start a new run to use the latest code. The artifact records `data_through`; cloud cover, coverage and compatible dates still determine whether usable inputs exist. Full ancillary windows must also finish before the cutoff, so late-month scenes needing subsequent weather or land-cover data can be deferred. Prediction review and website publication remain separate steps.
+
 The GitHub Pages workflow validates and publishes `website/dist` on pushes to `main`. Configure repository Settings → Pages → Source → GitHub Actions. The Sites copy uses its own publication flow; a GitHub push updates GitHub Pages, not the Sites copy.
 
 [Hosting and automated updates](docs/HOSTING_AND_AUTOMATION.md) explains free options and the remaining steps for operational monitoring. Catalog checks and AOI-based usable-scene detection are configured and have successful cloud runs. [Stage 3 feature processing](docs/STAGE3_LATEST_FEATURES.md) and [paired V5 inputs / review inference](docs/STAGE4_PAIRED_INPUTS.md) are tested and artifact-only. A historical replay produced complete inputs and predictions for 1,268 cells; the current new-date check found no compatible satellite pair. The research snapshot is never relabeled as current.

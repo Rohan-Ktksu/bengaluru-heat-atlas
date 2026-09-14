@@ -14,6 +14,7 @@ from pathlib import Path
 
 import ee
 import google.auth
+from monthly_policy import month_cutoff, cutoff_metadata
 
 
 BENGALURU_BOUNDS = [
@@ -105,10 +106,11 @@ def calculate_aoi_clear_percent(image, satellite_type, region):
     return clear_fraction.multiply(100)
 
 
-def inspect_latest_candidates(config, region):
+def inspect_latest_candidates(config, region, cutoff):
     collection = (
         ee.ImageCollection(config["id"])
         .filterBounds(region)
+        .filterDate('2013-01-01', cutoff.isoformat())
         .filter(
             ee.Filter.lt(
                 config["scene_cloud_field"],
@@ -209,10 +211,10 @@ def main():
     else:
         state = {}
 
+    now = datetime.now(timezone.utc)
+    cutoff = month_cutoff(now)
     result = {
-        "checked_at": datetime.now(
-            timezone.utc
-        ).isoformat(),
+        "checked_at": now.isoformat(),
 
         "kind": "usable_update_detection_v2",
 
@@ -223,12 +225,14 @@ def main():
 
         "collections": {},
     }
+    result.update(cutoff_metadata(now))
 
     for name, config in COLLECTIONS.items():
 
         candidates = inspect_latest_candidates(
             config,
             region,
+            cutoff,
         )
 
         previous = state.get(name)

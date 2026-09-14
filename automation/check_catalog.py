@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 import json
 import os
 from pathlib import Path
+from monthly_policy import month_cutoff, cutoff_metadata
 
 COLLECTIONS = {
     'landsat8': 'LANDSAT/LC08/C02/T1_L2',
@@ -26,11 +27,13 @@ def main():
         'https://www.googleapis.com/auth/cloud-platform'])
     ee.Initialize(credentials=credentials, project=args.project)
     now = datetime.now(timezone.utc)
-    start = (now - timedelta(days=120)).strftime('%Y-%m-%d')
-    end = (now + timedelta(days=1)).strftime('%Y-%m-%d')
+    cutoff = month_cutoff(now)
+    start = (cutoff - timedelta(days=120)).strftime('%Y-%m-%d')
+    end = cutoff.isoformat()
     region = ee.Geometry.Rectangle([77.4459721532,12.7919511319,77.7501879705,13.1512756019], geodesic=False)
     result = {'checked_at':now.isoformat(), 'kind':'catalog_availability_only',
               'research_snapshot_end':'2026-05-03', 'collections':{}}
+    result.update(cutoff_metadata(now))
     for name, collection_id in COLLECTIONS.items():
         collection = ee.ImageCollection(collection_id).filterBounds(region).filterDate(start,end)
         # One bounded metadata query per collection; no raster extraction.

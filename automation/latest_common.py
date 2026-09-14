@@ -5,6 +5,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from monthly_policy import month_cutoff, require_closed_window
 
 ROOT = Path(__file__).resolve().parents[1]
 GRID_PATH = ROOT / 'src/bengaluru_complete_1km_grid.csv'
@@ -67,6 +68,7 @@ def selected_scenes(report, state):
             raise ValueError('Selected scene is not newer than processed state')
         if utc(candidate['acquisition']) > utc(report['checked_at']):
             raise ValueError('Scene acquisition is after the detection check')
+        require_closed_window(candidate['acquisition'],month_cutoff(utc(report['checked_at'])))
         image_id = candidate['image_id']
         if not image_id or any(c not in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-' for c in image_id):
             raise ValueError('Expected a scene index, not an arbitrary asset path')

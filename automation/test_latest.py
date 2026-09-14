@@ -49,6 +49,7 @@ class LatestTests(unittest.TestCase):
     def test_reject_stale_or_bad_scene(self):
         for patch in [{'acquisition':'2026-05-01T00:00:00Z'}, {'usable':False},
                       {'image_id':'../../other'}, {'aoi_cloud_percentage':float('nan')},
+                      {'acquisition':'2026-09-01T00:00:00Z'},
                       {'acquisition':'2027-01-01T00:00:00Z'}]:
             report=self.report();report['collections']['landsat8']['selected_update'].update(patch)
             with self.assertRaises(ValueError): selected_scenes(report,self.state())

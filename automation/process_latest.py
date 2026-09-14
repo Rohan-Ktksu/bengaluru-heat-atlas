@@ -1,11 +1,12 @@
 """Extract selected scenes to the canonical grid; artifact only, no ML or publication."""
 import argparse
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import os
 from pathlib import Path
 
 from latest_common import (ROOT, GRID_PATH, FIELDS, load_grid, output_directory,
     protected_hashes, read_json, selected_scenes, utc, validate_records, write_json)
+from monthly_policy import month_cutoff, cutoff_metadata, require_closed_window
 
 def ratio(a, b, name):
     denominator = a.add(b)
@@ -92,14 +93,20 @@ def run(args):
     state = read_json(args.state)
     report = read_json(args.detection)
     selected = selected_scenes(report,state)
+    now = datetime.now(timezone.utc)
+    cutoff = month_cutoff(now)
+    for name,scene in selected.items():
+        require_closed_window(scene['acquisition'],cutoff,
+            timedelta(minutes=90) if name=='landsat8' else timedelta())
     before = protected_hashes()
-    metadata = {'schema_version':1,'generated_at':datetime.now(timezone.utc).isoformat(),
+    metadata = {'schema_version':1,'generated_at':now.isoformat(),
         'source_kind':'latest_conditions_observed_features','selected_scenes':selected,
         'historical_atlas_modified':False,'state_advanced':False,'ml_applied':False,
         'grid_source':str(GRID_PATH.relative_to(ROOT)), 'protected_sha256':before,
         'minimum_cell_valid_fraction':args.min_valid_fraction,
         'aggregation':'mean at 30 m in EPSG:32643; no imputation',
         'scene_pairing':'Independent sensor dates; not a model-ready paired feature matrix'}
+    metadata.update(cutoff_metadata(now))
     if not selected:
         metadata['status']='no_new_scenes'
         write_json(output/'metadata/processing_status.json',metadata)

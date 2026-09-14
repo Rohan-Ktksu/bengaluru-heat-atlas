@@ -9,6 +9,7 @@ import statistics
 from latest_common import ROOT, load_grid, output_directory, read_json, protected_hashes, write_json
 from process_latest import (landsat_features,sentinel_features,feature_collection,reduce_scene,overpass_weather)
 from v5_schema import FEATURES,SPATIAL,WEATHER,baseline_cutoff,paired,invalid_features
+from monthly_policy import month_cutoff, cutoff_metadata, require_closed_window
 
 def catalog_records(ee,collection,fields,limit=10):
     limited=collection.limit(limit)
@@ -30,10 +31,17 @@ def find_pair(ee,rows,state,now,minimum=.8,validation_date=None):
     landsat_id='LANDSAT/LC08/C02/T1_L2'
     sentinel_id='COPERNICUS/S2_SR_HARMONIZED'
     start=baseline_cutoff(state['landsat8']).isoformat()
-    end=now.isoformat()
+    cutoff=month_cutoff(now)
+    end=cutoff.isoformat()
     if validation_date:
         start=validation_date
         end=(date.fromisoformat(validation_date)+timedelta(days=1)).isoformat()
+        require_closed_window(validation_date+'T00:00:00+00:00',cutoff,timedelta(days=6))
+    start_time=datetime.fromisoformat(start.replace('Z','+00:00'))
+    if start_time.tzinfo is None:
+        start_time=start_time.replace(tzinfo=timezone.utc)
+    if start_time>=cutoff:
+        return None,[{'reason':'processed_state_already_reaches_monthly_cutoff'}]
     collection=(ee.ImageCollection(landsat_id).filterBounds(region).filterDate(start,end)
         .filter(ee.Filter.eq('PROCESSING_LEVEL','L2SP')).filter(ee.Filter.lt('CLOUD_COVER',20))
         .sort('system:time_start',False))
@@ -41,11 +49,20 @@ def find_pair(ee,rows,state,now,minimum=.8,validation_date=None):
     audit=[]
     for anchor in anchors:
         stamp=acquisition(anchor)
+        # Dynamic World uses the full +/-5-day window. Do not truncate it or
+        # consume current-month data to complete a late-month Landsat scene.
+        try:
+            require_closed_window(stamp,cutoff,timedelta(days=5))
+        except ValueError:
+            audit.append({'landsat_image_id':anchor['system:index'],
+                          'landsat_acquisition':stamp,'reason':'feature_window_exceeds_monthly_cutoff'})
+            continue
         land=ee.Image(landsat_id+'/'+anchor['system:index'])
         land_features=landsat_features(land)
         when=ee.Date(stamp)
         candidates=(ee.ImageCollection(sentinel_id).filterBounds(region)
             .filterDate(when.advance(-5,'day'),when.advance(5,'day'))
+            .filterDate('2013-01-01',cutoff.isoformat())
             .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE',20)).sort('CLOUDY_PIXEL_PERCENTAGE'))
         records=catalog_records(ee,candidates,['system:index','system:time_start','CLOUDY_PIXEL_PERCENTAGE'])
         item={'landsat_image_id':anchor['system:index'],'landsat_acquisition':stamp,
@@ -128,6 +145,7 @@ def prepare(args):
         'protected_sha256':before,'pair':pair,'candidate_audit':audit,
         'ready_for_publication':False,'minimum_cell_valid_fraction':.7,
         'minimum_joint_aoi_valid_fraction':.8}
+    status.update(cutoff_metadata(now))
     status['run_kind']='historical_validation_replay' if args.validation_date else 'new_acquisition_review'
     status['validation_date']=args.validation_date
     write_json(output/'metadata/pairing.json',status)
