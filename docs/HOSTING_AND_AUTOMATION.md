@@ -38,7 +38,7 @@ Keep the original 2026 study accessible. A rolling monitoring layer must have a 
 - An opt-in daily workflow at 02:23 UTC / 07:53 IST, with manual dispatch and a 10-minute timeout.
 - The check writes a downloadable Actions artifact. It does **not** update temperatures, mark the atlas live, or publish new predictions.
 
-The catalog job is enabled on this repository and has a successful authenticated cloud run. Stage 2 AOI-based usable-scene detection is also working. [Stage 3](STAGE3_LATEST_FEATURES.md) adds manual, artifact-only processing and validation; latest ML inference and website publication remain unimplemented.
+The catalog job is enabled on this repository and has a successful authenticated cloud run. Stage 2 AOI-based usable-scene detection is also working. [Stage 3](STAGE3_LATEST_FEATURES.md) adds manual, artifact-only processing and validation; [Paired input preparation and local review inference](STAGE4_PAIRED_INPUTS.md) are now implemented and tested on a historical replay; automatic new-date prediction delivery and website publication remain pending.
 
 ## Google setup (already completed for this repository)
 

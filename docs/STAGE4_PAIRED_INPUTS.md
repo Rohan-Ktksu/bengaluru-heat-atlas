@@ -41,3 +41,13 @@ python automation/predict_v5_review.py latest_data/v5-inputs --model /trusted/pa
 No model is downloaded automatically. No model is retrained. Predictions are not added to the historical website or labeled operationally validated. Comparing predicted grid means with observed grid means is a diagnostic; it is not an independent accuracy certification of a model trained on pixel samples.
 
 State advancement, rolling heat scores, hotspot recalculation and public latest-conditions deployment remain outside this workflow.
+
+## Verified runs and current readiness
+
+- [New-date check, run 34883806840](https://github.com/Rohan-Ktksu/bengaluru-heat-atlas/actions/runs/34883806840): succeeded with `no_compatible_pair`. The only new Landsat scene meeting the bounded search's metadata criteria was June 4, 2026. No Sentinel candidate within +/-5 days passed scene cloud <20%. Zero new input rows were produced; no inference or state advancement occurred.
+- [Explicit historical replay, run 34884034505](https://github.com/Rohan-Ktksu/bengaluru-heat-atlas/actions/runs/34884034505): May 3 Landsat paired with April 29 Sentinel. Joint satellite-valid area was 99.58%. All hourly weather windows were complete; 734 valid meteorological samples contributed to the date-level medians. All 1,320 grid records were preserved and 1,268 passed the combined-feature coverage/input gates. The other 52 were excluded without imputation.
+- Local inference with the original manifest-verified V5 model succeeded for those 1,268 cells in the recorded runtime. Comparison against observed grid-mean LST: MAE 2.1854 C, RMSE 2.7223 C, prediction-minus-observation bias +1.3043 C. These are historical replay diagnostics on a date already in the original evaluation period; they must not be advertised as a new independent accuracy result.
+
+The workflow now accepts an optional `validation_date` for one of the seven historical study dates. Leaving it blank searches only new acquisitions. Replay outputs carry `run_kind: historical_validation_replay`; the state and public atlas are never updated by a replay.
+
+The code is ready to prepare new-date inputs when an eligible pair exists. Current evidence does not support new-date predictions or automatic public latest-conditions publication. New feature extraction and the local inference helper have both been exercised; automated model artifact delivery, rolling scores/clusters and a public latest mode remain separate future work.

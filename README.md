@@ -49,7 +49,7 @@ Large serialized models should be stored as release assets rather than ordinary 
 
 The GitHub Pages workflow validates and publishes `website/dist` on pushes to `main`. Configure repository Settings → Pages → Source → GitHub Actions. The Sites copy uses its own publication flow; a GitHub push updates GitHub Pages, not the Sites copy.
 
-[Hosting and automated updates](docs/HOSTING_AND_AUTOMATION.md) explains free options and the remaining steps for operational monitoring. Catalog checks and AOI-based usable-scene detection are configured and have successful cloud runs. [Stage 3 feature processing](docs/STAGE3_LATEST_FEATURES.md) is manual and artifact-only; it never relabels the research snapshot as current.
+[Hosting and automated updates](docs/HOSTING_AND_AUTOMATION.md) explains free options and the remaining steps for operational monitoring. Catalog checks and AOI-based usable-scene detection are configured and have successful cloud runs. [Stage 3 feature processing](docs/STAGE3_LATEST_FEATURES.md) and [paired V5 inputs / review inference](docs/STAGE4_PAIRED_INPUTS.md) are tested and artifact-only. A historical replay produced complete inputs and predictions for 1,268 cells; the current new-date check found no compatible satellite pair. The research snapshot is never relabeled as current.
 
 ## Provenance and use
 
