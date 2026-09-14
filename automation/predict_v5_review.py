@@ -12,6 +12,9 @@ def main():
     parser.add_argument('directory',type=Path)
     parser.add_argument('--model',type=Path,required=True)
     args=parser.parse_args()
+    directory=args.directory.resolve()
+    if (ROOT/'latest_data').resolve() not in directory.parents:
+        raise ValueError('Inference output must stay within latest_data')
     report=validate(args.directory,verify_protected=False)
     if report['eligible_cell_count']==0: raise ValueError('No matched inputs to predict')
     manifest=read_json(ROOT/'MODEL_MANIFEST.json')
@@ -42,6 +45,7 @@ def main():
     summary={'status':'predicted_for_review','predicted_cells':len(output),'model_sha256':digest.hexdigest(),
              'ready_for_publication':False,'historical_atlas_modified':False,'state_advanced':False,
              'note':'Grid-mean input inference differs from pixel training support. Diagnostics are not independent accuracy certification.'}
+    summary['run_kind']=read_json(args.directory/'metadata/model_input_status.json')['run_kind']
     if comparisons:
         errors=np.array([p-o for p,o in comparisons])
         summary['observed_comparison']={'cells':len(comparisons),'MAE_C':float(abs(errors).mean()),

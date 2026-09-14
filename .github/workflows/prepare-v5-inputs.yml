@@ -1,6 +1,12 @@
 name: Pair scenes and prepare V5 inputs (review only)
 on:
   workflow_dispatch:
+    inputs:
+      validation_date:
+        description: 'Optional historical study date for validation replay (leave empty for new data)'
+        required: false
+        default: ''
+        type: string
 permissions:
   contents: read
   id-token: write
@@ -25,9 +31,15 @@ jobs:
           project_id: ${{ vars.EE_PROJECT_ID }}
       - run: pip install 'earthengine-api>=1.6,<2'
       - name: Find compatible imagery and prepare features
-        run: python automation/prepare_v5_inputs.py --output latest_data/v5-inputs
+        run: |
+          if [ -n "$VALIDATION_DATE" ]; then
+            python automation/prepare_v5_inputs.py --output latest_data/v5-inputs --validation-date "$VALIDATION_DATE"
+          else
+            python automation/prepare_v5_inputs.py --output latest_data/v5-inputs
+          fi
         env:
           EE_PROJECT_ID: ${{ vars.EE_PROJECT_ID }}
+          VALIDATION_DATE: ${{ inputs.validation_date }}
       - name: Validate model inputs
         run: python automation/validate_v5_inputs.py latest_data/v5-inputs
       - uses: actions/upload-artifact@v4

@@ -1,6 +1,6 @@
 """Pair satellite acquisitions and prepare all 25 V5 inputs as a review artifact."""
 import argparse
-from datetime import datetime,timezone
+from datetime import datetime,timezone,timedelta,date
 import math
 import os
 from pathlib import Path
@@ -25,12 +25,16 @@ def joint_coverage(ee,landsat,sentinel,region):
         reducer=ee.Reducer.mean(),geometry=region,scale=30,crs='EPSG:32643',
         maxPixels=1e8,tileScale=4).get('valid').getInfo()
 
-def find_pair(ee,rows,state,now,minimum=.8):
+def find_pair(ee,rows,state,now,minimum=.8,validation_date=None):
     region=feature_collection(ee,rows).geometry()
     landsat_id='LANDSAT/LC08/C02/T1_L2'
     sentinel_id='COPERNICUS/S2_SR_HARMONIZED'
     start=baseline_cutoff(state['landsat8']).isoformat()
-    collection=(ee.ImageCollection(landsat_id).filterBounds(region).filterDate(start,now.isoformat())
+    end=now.isoformat()
+    if validation_date:
+        start=validation_date
+        end=(date.fromisoformat(validation_date)+timedelta(days=1)).isoformat()
+    collection=(ee.ImageCollection(landsat_id).filterBounds(region).filterDate(start,end)
         .filter(ee.Filter.eq('PROCESSING_LEVEL','L2SP')).filter(ee.Filter.lt('CLOUD_COVER',20))
         .sort('system:time_start',False))
     anchors=catalog_records(ee,collection,['system:index','system:time_start','CLOUD_COVER'])
@@ -118,12 +122,14 @@ def prepare(args):
     import google.auth
     credentials,_=google.auth.default(scopes=['https://www.googleapis.com/auth/earthengine','https://www.googleapis.com/auth/cloud-platform'])
     ee.Initialize(credentials=credentials,project=args.project)
-    pair,audit=find_pair(ee,rows,state,now)
+    pair,audit=find_pair(ee,rows,state,now,validation_date=args.validation_date)
     status={'schema_version':1,'generated_at':now.isoformat(),'feature_order':FEATURES,
         'historical_atlas_modified':False,'state_advanced':False,'ml_applied':False,
         'protected_sha256':before,'pair':pair,'candidate_audit':audit,
         'ready_for_publication':False,'minimum_cell_valid_fraction':.7,
         'minimum_joint_aoi_valid_fraction':.8}
+    status['run_kind']='historical_validation_replay' if args.validation_date else 'new_acquisition_review'
+    status['validation_date']=args.validation_date
     write_json(output/'metadata/pairing.json',status)
     if not pair:
         status.update(status='no_compatible_pair',eligible_cell_count=0)
@@ -177,6 +183,9 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project',default=os.environ.get('EE_PROJECT_ID'))
     parser.add_argument('--output',type=Path,default=ROOT/'latest_data/v5-inputs')
+    parser.add_argument('--validation-date',choices=['2026-01-27','2026-02-12','2026-02-28',
+        '2026-03-16','2026-04-01','2026-04-17','2026-05-03'],default=None,
+        help='Explicit historical replay for testing; never a new-data update')
     args=parser.parse_args()
     if not args.project: parser.error('EE_PROJECT_ID is required')
     prepare(args)
