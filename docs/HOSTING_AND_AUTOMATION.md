@@ -38,9 +38,9 @@ Keep the original 2026 study accessible. A rolling monitoring layer must have a 
 - An opt-in daily workflow at 02:23 UTC / 07:53 IST, with manual dispatch and a 10-minute timeout.
 - The check writes a downloadable Actions artifact. It does **not** update temperatures, mark the atlas live, or publish new predictions.
 
-The catalog job is disabled unless `ENABLE_CATALOG_CHECK=true`. It has not been authenticated against Earth Engine from GitHub in this setup.
+The catalog job is enabled on this repository and has a successful authenticated cloud run. Stage 2 AOI-based usable-scene detection is also working. [Stage 3](STAGE3_LATEST_FEATURES.md) adds manual, artifact-only processing and validation; latest ML inference and website publication remain unimplemented.
 
-## One-time Google setup still required
+## Google setup (already completed for this repository)
 
 Use an Earth Engine-enabled Cloud project with verified noncommercial eligibility. Configure GitHub OIDC Workload Identity Federation restricted to this exact repository and its main branch, with a service account allowed to use Earth Engine in that project. Prefer short-lived OIDC credentials; do not commit private keys or personal Earth Engine refresh tokens.
 

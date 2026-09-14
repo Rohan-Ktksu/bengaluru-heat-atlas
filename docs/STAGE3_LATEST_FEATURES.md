@@ -45,3 +45,14 @@ Inspect distributions, per-cell masks, temporal alignment, coverage and comparis
 Official dataset references: [Landsat 8 L2](https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC08_C02_T1_L2), [Sentinel-2 SR](https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED).
 
 Local tests: `python -m unittest discover -s automation -p test_latest.py -v`.
+
+## First verified cloud run
+
+[Run 34882287906](https://github.com/Rohan-Ktksu/bengaluru-heat-atlas/actions/runs/34882287906) succeeded on code revision `9df9124db323223b867500e6dea634da992f519e`. Seven offline checks, extraction, independent artifact validation, and artifact upload passed.
+
+| Source | Acquisition | Cells meeting 70% coverage | Mean full-cell valid fraction |
+|---|---|---:|---:|
+| Landsat 8 | 2026-06-04 05:09:57 UTC | 1,118 / 1,320 | 87.28% |
+| Sentinel-2 | 2026-05-12 05:25:16 UTC | 1,236 / 1,320 | 95.17% |
+
+All 1,320 grid records are present, including explicitly null low-coverage records. The five ERA5 overpass weather variables were available. Sensor acquisitions differ by 22.99 days, exceeding the historical +/-5-day pairing rule. Consequently this successful extraction is **not ready for V5 inference or publication**. No historical data or processed-date state was changed. The 14-day downloadable artifact is attached to the run; repeat a manual run if it expires.

@@ -17,8 +17,8 @@ The current website is a **research snapshot from 27 January–3 May 2026**, not
 | `configs/` | Earlier pilot configuration; does not describe the final study |
 | `output/` | Saved research outputs |
 | `website/` | Authored website, original JSON exports, preparation script, and research review |
-| `automation/` | Noninteractive satellite-catalog availability checker; does not update predictions |
-| `.github/workflows/` | Website validation/deployment and an opt-in daily catalog check |
+| `automation/` | Catalog checks, usable-scene detection and artifact-only latest feature processing |
+| `.github/workflows/` | Website publication, daily catalog/detection checks and manual Stage 3 processing |
 | `docs/` | Hosting, automation design, provenance, and reproducibility notes |
 
 ## Run the website locally
@@ -43,13 +43,13 @@ python -m pip install -r requirements.txt
 
 Earth Engine scripts require your own registered, eligible Google Cloud project and authentication. Several scripts prompt for its project ID and use fixed historical dates. **Do not run all numbered scripts blindly:** some overwrite prior outputs, and earlier experiments contain issues documented in [the script review](website/RESEARCH_REVIEW.md). The website preparation script only reads saved analysis.
 
-Large serialized models are distributed through GitHub Releases rather than ordinary Git history. Restore them to `models/` using their original filenames. Download only trusted model files: Python pickle/joblib loading can execute code. Model generation is in scripts 17 and 30; exact reproduction also depends on package versions, satellite catalog revisions, and the original input datasets.
+Large serialized models should be stored as release assets rather than ordinary Git history; Stage 3 does not download or load them. Check the release assets before assuming a model is available. Restore them to `models/` using their original filenames. Download only trusted model files: Python pickle/joblib loading can execute code. Model generation is in scripts 17 and 30; exact reproduction also depends on package versions, satellite catalog revisions, and the original input datasets.
 
 ## Publish and update
 
 The GitHub Pages workflow validates and publishes `website/dist` on pushes to `main`. Configure repository Settings → Pages → Source → GitHub Actions. The Sites copy uses its own publication flow; a GitHub push updates GitHub Pages, not the Sites copy.
 
-[Hosting and automated updates](docs/HOSTING_AND_AUTOMATION.md) explains free options and the remaining steps for operational monitoring. Daily catalog checks are **disabled until explicitly configured**; they never relabel the research snapshot as current.
+[Hosting and automated updates](docs/HOSTING_AND_AUTOMATION.md) explains free options and the remaining steps for operational monitoring. Catalog checks and AOI-based usable-scene detection are configured and have successful cloud runs. [Stage 3 feature processing](docs/STAGE3_LATEST_FEATURES.md) is manual and artifact-only; it never relabels the research snapshot as current.
 
 ## Provenance and use
 
