@@ -1,0 +1,32 @@
+{
+  "project_name": "Bengaluru Urban Heat Mitigation Decision Support System",
+  "grid_resolution_km": 1,
+  "total_grid_cells": 1320,
+  "study_area_km2": 1320.0,
+  "high_priority_cells": 198,
+  "very_high_priority_cells": 132,
+  "high_and_very_high_cells": 330,
+  "high_and_very_high_percent": 25.0,
+  "mean_median_lst_c": 36.34,
+  "highest_median_lst_c": 46.31,
+  "highest_max_lst_c": 48.98,
+  "hotspot_clusters": 73,
+  "scenario_based_trees": 1362505,
+  "high_priority_area_trees": 719906,
+  "reliable_observation_cells": 678,
+  "limited_plus_v5_cells": 578,
+  "prediction_only_cells": 64,
+  "top_hotspot": {
+    "planning_rank": 1,
+    "cluster_id": 2,
+    "locality": "Dr. Shivaram Karanth Layout",
+    "planning_category": "Critical",
+    "cluster_area_km2": 127.0,
+    "high_cells": 65,
+    "very_high_cells": 62,
+    "mean_median_lst_c": 38.86,
+    "maximum_lst_c": 48.33,
+    "trees": 265347,
+    "planning_significance_score": 76.25
+  }
+}

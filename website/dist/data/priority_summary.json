@@ -1,0 +1,42 @@
+[
+  {
+    "Priority":"Low",
+    "Cells":660,
+    "Area_km2":660.0,
+    "Study_Area_Percent":50.0,
+    "Mean_Median_LST":35.2242410687,
+    "Maximum_LST":48.976472822,
+    "Mean_Heat_Score":38.9707053122,
+    "Estimated_Trees":294084
+  },
+  {
+    "Priority":"Moderate",
+    "Cells":330,
+    "Area_km2":330.0,
+    "Study_Area_Percent":25.0,
+    "Mean_Median_LST":36.2539903234,
+    "Maximum_LST":47.9033512628,
+    "Mean_Heat_Score":47.8082814781,
+    "Estimated_Trees":348515
+  },
+  {
+    "Priority":"High",
+    "Cells":198,
+    "Area_km2":198.0,
+    "Study_Area_Percent":15.0,
+    "Mean_Median_LST":37.1154737032,
+    "Maximum_LST":48.864874469,
+    "Mean_Heat_Score":51.3368885018,
+    "Estimated_Trees":353262
+  },
+  {
+    "Priority":"Very High",
+    "Cells":132,
+    "Area_km2":132.0,
+    "Study_Area_Percent":10.0,
+    "Mean_Median_LST":40.9778445246,
+    "Maximum_LST":48.7885671725,
+    "Mean_Heat_Score":63.7999210956,
+    "Estimated_Trees":366644
+  }
+]

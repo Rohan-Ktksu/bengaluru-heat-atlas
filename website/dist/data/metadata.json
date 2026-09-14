@@ -1,0 +1,30 @@
+{
+  "analysis_year": 2026,
+  "grid_resolution": "Approximately 1 km x 1 km",
+  "prediction_dates": [
+    "2026-01-27",
+    "2026-02-12",
+    "2026-02-28",
+    "2026-03-16",
+    "2026-04-01",
+    "2026-04-17",
+    "2026-05-03"
+  ],
+  "satellite_sources": [
+    "Landsat",
+    "Sentinel-2",
+    "Dynamic World"
+  ],
+  "model": "V5 LST prediction model",
+  "model_features": 25,
+  "analysis_method": "Hybrid multi-date observation and V5 prediction",
+  "priority_classes": [
+    "Low",
+    "Moderate",
+    "High",
+    "Very High"
+  ],
+  "tree_estimate_note": "Tree values are scenario-based planning estimates and are not exact planting requirements.",
+  "temperature_note": "LST represents land surface temperature and should not be interpreted as air temperature.",
+  "study_area_note": "The study area represents the rectangular analysis grid and not the official administrative area of Bengaluru or BBMP."
+}
